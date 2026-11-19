@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { forfeit, getGrid, getPlayer, getPlayers, getTurn, listGames, validateInput } from '../api';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { forfeit, getGrid, getPlayer, getPlayers, getTurn, listGames, selectCell, validateInput } from '../api';
 import CountdownRing from '../components/CountdownRing.jsx';
 import ErrorMessage from '../components/ErrorMessage.jsx';
 import GameGrid from '../components/GameGrid.jsx';
@@ -11,7 +11,7 @@ import Logo from '../components/Logo.jsx';
 import { useCountdown } from '../hooks/useCountdown.js';
 import { usePlayer } from '../hooks/usePlayer.js';
 import { usePolling } from '../hooks/usePolling.js';
-import { APPROVED_DELAY_MS, HEARTBEAT_MS, POLL_GAME_MS, TURN_SECONDS } from '../utils/constants.js';
+import { APPROVED_DELAY_MS, HEARTBEAT_MS, POLL_GAME_MS, RESULT_MESSAGE_MS, TURN_SECONDS } from '../utils/constants.js';
 import { parseCoordinates } from '../utils/validators.js';
 import { toCellId } from '../utils/cells.js';
 import '../styles/screens.css';
@@ -22,11 +22,16 @@ import '../styles/game.css';
  * Endpoints: GET /games/{gameId}/grid, GET /games/{gameId}/turn, GET /games/{gameId}/players,
  * POST /games/{gameId}/players/{playerId}/validate-input, PUT /games/{gameId}/players/{playerId}/forfeit.
  * Το GET /games χρησιμοποιείται μόνο για να φανεί αν το game τελείωσε.
+ *
+ * Task #15: κλικ σε ελεύθερο cell στη σειρά του παίκτη το ζητά απευθείας
+ * (PUT /games/{gameId}/players/{playerId}/cells/{cellId}). Μετά το challenge εμφανίζεται εδώ το αποτέλεσμα
+ * (M-9 επιτυχία, M-10 αποτυχία, M-11 λήξη χρόνου).
  */
 export default function GameBoardPage() {
   const gameId = Number(useParams().gameId);
   const { playerId, gameId: sessionGameId, setGameId, reset } = usePlayer();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [grid, setGrid] = useState(null);
   const [players, setPlayers] = useState([]);
@@ -40,7 +45,23 @@ export default function GameBoardPage() {
   const [approved, setApproved] = useState(null);
   const [rejected, setRejected] = useState(null);
   const [confirmForfeit, setConfirmForfeit] = useState(false);
+  const [result, setResult] = useState(null);
   const inputRef = useRef(null);
+
+  // Αποτέλεσμα του challenge που μόλις ολοκληρώθηκε (το στέλνει η ChallengePage). Καθαρίζεται από το history
+  // ώστε να μην ξαναεμφανιστεί με ανανέωση της σελίδας.
+  useEffect(() => {
+    const challengeResult = location.state?.challengeResult;
+    if (!challengeResult) return;
+    setResult(challengeResult);
+    navigate(location.pathname, { replace: true, state: null });
+  }, [location.state, location.pathname, navigate]);
+
+  useEffect(() => {
+    if (!result) return undefined;
+    const id = setTimeout(() => setResult(null), RESULT_MESSAGE_MS);
+    return () => clearTimeout(id);
+  }, [result]);
 
   // Το game της διεύθυνσης γίνεται το game της συνεδρίας (π.χ. αν ο παίκτης άνοιξε απευθείας το link).
   useEffect(() => {
@@ -99,6 +120,21 @@ export default function GameBoardPage() {
     try {
       const { data } = await validateInput(gameId, playerId, parsed.row, parsed.column);
       setApproved(data);
+    } catch (err) {
+      setRejected(err.message);
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  /** Κλικ σε ελεύθερο cell: το ζητά απευθείας με το cellId (χωρίς πληκτρολόγηση συντεταγμένων). */
+  async function handleCellClick(cell) {
+    setCoordinates(`${cell.column} , ${cell.row}`);
+    if (cell.owner !== null || busy) return;
+    setBusy(true);
+    try {
+      const { data } = await selectCell(gameId, playerId, cell.cellId);
+      setApproved({ cellId: data.cell.cellId, challengeId: data.challengeId });
     } catch (err) {
       setRejected(err.message);
     } finally {
@@ -208,10 +244,16 @@ export default function GameBoardPage() {
           <GameGrid
             grid={grid}
             selectedCellId={selected ? toCellId(selected.row, selected.column) : null}
-            onCellClick={isMyTurn ? (cell) => setCoordinates(`${cell.column} , ${cell.row}`) : undefined}
+            onCellClick={isMyTurn ? handleCellClick : undefined}
+            cellTitle={(cell) =>
+              isMyTurn && cell.owner === null ? `Request cell (${cell.column}, ${cell.row})` : `(${cell.column}, ${cell.row})`
+            }
+            highlightCellId={result?.outcome === 'success' ? result.cell?.cellId : null}
           />
         </div>
       )}
+
+      {result && <ChallengeResult result={result} onClose={() => setResult(null)} />}
 
       {approved && (
         <div className="game-overlay" role="alertdialog" aria-modal="true" aria-labelledby="approved-title">
@@ -261,6 +303,26 @@ export default function GameBoardPage() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+const RESULT_TEXT = {
+  success: { icon: '🎉', title: 'CONGRATULATIONS!', text: 'The cell is yours.' },
+  failed: { icon: '🤡', title: 'You have failed your challenge!!!', text: 'Try your luck in the next round.' },
+  timeout: { icon: '🤡', title: 'Time’s out !!!', text: 'You may have the skills, but damn are you slow…' },
+};
+
+/** Μήνυμα αποτελέσματος του challenge (M-9, M-10, M-11). */
+function ChallengeResult({ result, onClose }) {
+  const { icon, title, text } = RESULT_TEXT[result.outcome] ?? RESULT_TEXT.failed;
+  return (
+    <div className={`result-toast ${result.outcome === 'success' ? 'is-success' : ''}`} role="status" onClick={onClose}>
+      <span className="result-icon" aria-hidden="true">{icon}</span>
+      <div>
+        <strong>{title}</strong>
+        <p>{text}</p>
+      </div>
     </div>
   );
 }

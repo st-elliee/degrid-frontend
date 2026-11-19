@@ -40,7 +40,7 @@ cp .env.example .env
 | 1 | Home | `src/pages/HomePage.jsx` | M-1 | `POST /queue/players` |
 | 2 | Queue lobby | `src/pages/QueuePage.jsx` | M-2, M-4, M-5, M-6 | `GET /queue/players`, `PUT /players/{playerId}/exit` |
 | 3 | Game board | `src/pages/GameBoardPage.jsx` | M-3, M-7, M-8 | `GET /games/{gameId}/grid`, `GET /games/{gameId}/turn`, `GET /games/{gameId}/players`, `POST .../validate-input`, `PUT .../forfeit` |
-| 4 | Challenge | `src/pages/ChallengePage.jsx` | M-13, M-9, M-10, M-11 | `GET /games/{gameId}/challenges/{challengeId}`, `POST .../challenge-answer` |
+| 4 | Challenge | `src/pages/ChallengePage.jsx` | M-12, M-9, M-10, M-11 | `GET /games/{gameId}/challenges/{challengeId}`, `POST .../challenge-answer`, `PUT .../cells/{cellId}` (κλικ σε cell στο board) |
 | 5 | Edit profile (modal) | `src/components/EditProfileModal.jsx` | M-2 | `GET /games/{gameId}/players/{playerId}`, `PUT .../profile` |
 
 Οι οθόνες 1-5 είναι στην αρχή placeholders και υλοποιούνται στα tasks #13 (Home, Queue), #14 (Game board),

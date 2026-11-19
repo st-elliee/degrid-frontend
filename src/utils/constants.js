@@ -34,6 +34,12 @@ export const TURN_SECONDS = Number(import.meta.env.VITE_TURN_SECONDS) || 60;
 /** Πόση ώρα φαίνεται το "The coordinates have been approved" πριν ανοίξει το challenge (ms). */
 export const APPROVED_DELAY_MS = 2000;
 
+/** Αναμονή μετά τη λήξη του challenge, ώστε το backend να το σημειώσει ως ληγμένο (ms). */
+export const TIMEOUT_GRACE_MS = 1500;
+
+/** Πόση ώρα φαίνεται το αποτέλεσμα του challenge στο game board (ms). */
+export const RESULT_MESSAGE_MS = 5000;
+
 /** Ανανέωση της ένδειξης "Game in progress" στην επικεφαλίδα των οθονών Home και Queue (ms). */
 export const POLL_STATUS_MS = 5000;
 

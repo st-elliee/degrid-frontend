@@ -84,3 +84,40 @@
   .game-grid { gap: 2px; grid-template-columns: 1.4rem repeat(16, 1fr); grid-template-rows: repeat(16, 1fr) 1.4rem; }
   .grid-label { font-size: 0.7rem; }
 }
+
+/* Οθόνη Challenge (mockup M-12) */
+.screen-challenge { justify-content: center; align-items: center; }
+.challenge-card {
+  background: #ff5533; color: #fff; border-radius: 28px; padding: 2rem 2.5rem;
+  width: min(1000px, 100%); text-align: center; display: flex; flex-direction: column; gap: 1.5rem;
+}
+.challenge-intro { font-size: clamp(1.1rem, 2vw, 1.6rem); margin: 0; line-height: 1.4; }
+.challenge-body { display: flex; align-items: center; gap: 1.5rem; }
+.challenge-timer .countdown-track { stroke: rgba(0, 0, 0, 0.25); }
+.challenge-timer .countdown-progress { stroke: #20232e; }
+.challenge-timer .countdown-text { color: #20232e; }
+.challenge-question { flex: 1; font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 500; margin: 0; }
+.challenge-options { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.challenge-option {
+  flex: 1 1 10rem; background: #f4a06b; color: #fff; border: 1px solid #20232e; border-radius: 6px;
+  font-size: 1.2rem; padding: 0.9rem 1rem;
+}
+.challenge-option:hover:not(:disabled) { background: #f7b386; }
+.challenge-option.is-chosen { background: #20232e; }
+.challenge-status { margin: 0; font-size: 1.2rem; }
+
+/* Αποτέλεσμα challenge στο game board (M-9, M-10, M-11) */
+.result-toast {
+  position: fixed; right: 2rem; bottom: 2rem; z-index: 5; display: flex; align-items: center; gap: 1rem;
+  background: #ff6a4d; color: #fff; border-radius: 28px; padding: 1.25rem 1.75rem; max-width: min(420px, calc(100% - 2rem));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.result-toast.is-success { background: #2f9e44; }
+.result-toast strong { display: block; font-size: 1.3rem; font-weight: 500; }
+.result-toast p { margin: 0.4rem 0 0; }
+.result-icon { font-size: 2.6rem; line-height: 1; }
+.grid-cell.is-acquired { animation: acquired 1.2s ease-out 2; }
+@keyframes acquired {
+  0% { box-shadow: 0 0 0 0 rgba(140, 233, 154, 0.9); }
+  100% { box-shadow: 0 0 0 14px rgba(140, 233, 154, 0); }
+}
