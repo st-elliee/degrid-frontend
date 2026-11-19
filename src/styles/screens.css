@@ -72,3 +72,26 @@
 .modal-light p { font-size: 1.3rem; }
 .modal-actions { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
 .modal-actions .btn { font-size: 1.2rem; padding: 0.7rem 1.4rem; border-radius: 8px; }
+
+/* Ενημέρωση στυλ Home και Queue πιο κοντά στα mockups (task #17). */
+.status-group { display: inline-flex; align-items: center; gap: 1.5rem; }
+.music-icon { color: var(--purple); flex: none; }
+.logo { display: block; max-width: 100%; }
+
+.btn { box-shadow: 0 4px 6px rgba(0, 0, 0, 0.45); text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); }
+.btn-primary { background: #dd5133; }
+.btn-secondary { background: #855c47; }
+.btn-outline, .btn-soft, .icon-btn { box-shadow: none; text-shadow: none; }
+
+.title { font-weight: 500; letter-spacing: 0.02em; margin-top: -0.5rem; }
+.tagline { margin: 1.5rem 0 2rem; }
+
+.demo-controls {
+  margin-top: auto; display: flex; flex-direction: column; align-items: center; gap: 0.4rem;
+  padding-top: 2rem; color: var(--muted);
+}
+.field-inline { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 0.85rem; }
+.field-inline select {
+  font: inherit; padding: 0.25rem 0.5rem; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text);
+}

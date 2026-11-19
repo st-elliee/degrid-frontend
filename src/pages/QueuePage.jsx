@@ -92,7 +92,7 @@ export default function QueuePage() {
   return (
     <div className="screen screen-queue">
       <div className="screen-top screen-top-queue">
-        <Logo size={72} />
+        <Logo size={90} />
         <div className="top-right">
           <button type="button" className="icon-btn" onClick={handleExit} aria-label="Exit queue" title="Exit queue">
             Exit

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { listGames } from '../api';
+import MusicIcon from './MusicIcon.jsx';
 import { usePolling } from '../hooks/usePolling.js';
 import { hasGameInProgress } from '../utils/games.js';
 import { POLL_STATUS_MS } from '../utils/constants.js';
@@ -17,11 +18,19 @@ export default function GameStatusBadge() {
     }
   }, POLL_STATUS_MS);
 
-  if (active === null) return <span className="status-badge status-unknown">Connecting…</span>;
+  const badge =
+    active === null ? (
+      <span className="status-badge status-unknown">Connecting…</span>
+    ) : (
+      <span className={`status-badge ${active ? 'status-live' : 'status-idle'}`}>
+        <span className="status-dot" aria-hidden="true" />
+        {active ? 'Game in progress' : 'No game in progress'}
+      </span>
+    );
   return (
-    <span className={`status-badge ${active ? 'status-live' : 'status-idle'}`}>
-      <span className="status-dot" aria-hidden="true" />
-      {active ? 'Game in progress' : 'No game in progress'}
+    <span className="status-group">
+      <MusicIcon />
+      {badge}
     </span>
   );
 }

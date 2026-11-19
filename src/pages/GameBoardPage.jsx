@@ -186,7 +186,7 @@ export default function GameBoardPage() {
   return (
     <div className="screen screen-game">
       <div className="game-top">
-        <Logo size={56} />
+        <Logo size={70} />
         <div className="turn-info">
           {turn && !finished && <CountdownRing seconds={secondsLeft} total={TURN_SECONDS} size={88} />}
           <p className={`turn-message ${isMyTurn ? 'is-mine' : ''}`}>{turnMessage}</p>
