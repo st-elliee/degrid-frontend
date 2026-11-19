@@ -1,17 +1,21 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { joinQueue } from '../api';
+import { joinQueue, listGames } from '../api';
 import ErrorMessage from '../components/ErrorMessage.jsx';
 import GameStatusBadge from '../components/GameStatusBadge.jsx';
 import Logo from '../components/Logo.jsx';
 import { usePlayer } from '../hooks/usePlayer.js';
-import { LANGUAGES, PLAYER_COUNT } from '../utils/constants.js';
+import { usePolling } from '../hooks/usePolling.js';
+import { LANGUAGES, PLAYER_COUNT, POLL_STATUS_MS } from '../utils/constants.js';
+import { findGameOfPlayer } from '../utils/games.js';
 import '../styles/screens.css';
 
 /**
  * Οθόνη 1: Home (mockup M-1). Task #13.
  * Endpoint: POST /queue/players.
  * Το mockup δεν έχει login, οπότε ο παίκτης επιλέγεται από λίστα (IDs 1-48 του backend).
+ * Αν ο παίκτης είναι ήδη σε game σε εξέλιξη (GET /games), στη θέση του "Join Game Queue" εμφανίζεται
+ * το "Back to game", που ανοίγει το game board.
  */
 export default function HomePage() {
   const { playerId, setPlayerId, language, setLanguage, setGameId } = usePlayer();
@@ -19,6 +23,30 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showLanguages, setShowLanguages] = useState(false);
+  const [activeGameId, setActiveGameId] = useState(null);
+
+  /** Ελέγχει αν ο επιλεγμένος παίκτης παίζει ήδη σε κάποιο game. */
+  const checkActiveGame = useCallback(async () => {
+    try {
+      const { data } = await listGames();
+      setActiveGameId(findGameOfPlayer(data, playerId)?.gameId ?? null);
+    } catch {
+      setActiveGameId(null);
+    }
+  }, [playerId]);
+
+  usePolling(checkActiveGame, POLL_STATUS_MS, false);
+
+  // Άμεσος έλεγχος όταν αλλάζει ο παίκτης (χωρίς να περιμένουμε το επόμενο polling).
+  useEffect(() => {
+    setActiveGameId(null);
+    checkActiveGame();
+  }, [checkActiveGame]);
+
+  function handleBackToGame() {
+    setGameId(activeGameId);
+    navigate(`/game/${activeGameId}`);
+  }
 
   async function handleJoin() {
     setLoading(true);
@@ -60,9 +88,15 @@ export default function HomePage() {
       </label>
 
       <div className="actions">
-        <button type="button" className="btn btn-primary" onClick={handleJoin} disabled={loading}>
-          {loading ? 'Joining…' : 'Join Game Queue'}
-        </button>
+        {activeGameId ? (
+          <button type="button" className="btn btn-primary" onClick={handleBackToGame}>
+            Back to game #{activeGameId}
+          </button>
+        ) : (
+          <button type="button" className="btn btn-primary" onClick={handleJoin} disabled={loading}>
+            {loading ? 'Joining…' : 'Join Game Queue'}
+          </button>
+        )}
         <button type="button" className="btn btn-secondary" onClick={() => setShowLanguages((v) => !v)}>
           Change Language
         </button>

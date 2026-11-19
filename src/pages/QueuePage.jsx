@@ -195,6 +195,7 @@ export default function QueuePage() {
         gameId={startedGameId}
         playerId={playerId}
         onClose={() => setProfileOpen(false)}
+        onSaved={refresh}
       />
     </div>
   );

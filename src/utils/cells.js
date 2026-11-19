@@ -20,3 +20,9 @@ export function colourToCss(cellColour) {
   if (!cellColour) return null;
   return `#${Number(cellColour).toString(16).padStart(6, '0')}`;
 }
+
+/** Το χρώμα (CSS) ενός παίκτη, όπως φαίνεται στα cells του στο grid. null αν δεν έχει cells. */
+export function playerColour(grid, playerId) {
+  const cell = grid?.cells.find((c) => c.owner === playerId && c.cellColour);
+  return cell ? colourToCss(cell.cellColour) : null;
+}

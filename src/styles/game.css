@@ -1,0 +1,124 @@
+/* Οθόνη Game board (mockups M-3, M-7, M-8). */
+
+.app-main:has(.screen-game) { max-width: 1280px; }
+.screen-game { align-items: stretch; }
+
+.game-top { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.turn-info { display: flex; align-items: center; gap: 1.25rem; }
+.turn-message { color: var(--muted); font-size: 1.2rem; margin: 0; max-width: 22rem; }
+.turn-message.is-mine { color: var(--accent); }
+
+/* Κυκλικό χρονόμετρο */
+.countdown { position: relative; display: inline-grid; place-items: center; flex: none; }
+.countdown svg { position: absolute; inset: 0; }
+.countdown-track { fill: none; stroke: var(--border); stroke-width: 3; }
+.countdown-progress { fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round; transition: stroke-dashoffset 0.25s linear; }
+.countdown-text { position: relative; font-size: 1.1rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+.game-layout { display: grid; grid-template-columns: minmax(260px, 360px) 1fr; gap: 2rem; align-items: start; }
+.game-side { display: flex; flex-direction: column; gap: 1.25rem; }
+
+/* Leaderboard */
+.leaderboard-title {
+  margin: 0 auto; padding: 0.6rem 1.5rem; border: 1px solid var(--text); border-radius: 10px;
+  color: var(--accent); font-weight: 500; font-size: 1.8rem; text-align: center; width: fit-content;
+}
+.leaderboard-table { border: 1px solid var(--text); border-radius: 10px; margin-top: 1rem; }
+.leaderboard-head {
+  display: grid; grid-template-columns: 1fr 5rem; border-bottom: 1px solid var(--text);
+  font-size: 1.2rem; letter-spacing: 0.05em;
+}
+.leaderboard-head span { padding: 0.7rem 1rem; text-align: center; }
+.leaderboard-head span + span { border-left: 1px solid var(--text); }
+.leaderboard-list { list-style: none; margin: 0; padding: 0.5rem 0.75rem; max-height: 300px; overflow-y: auto; }
+.leaderboard-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.35rem 0.25rem; border-radius: 8px; }
+.leaderboard-row.is-turn { background: var(--surface-2); }
+.leaderboard-name { flex: 1; font-size: 1.1rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.leaderboard-cells { width: 2.5rem; text-align: center; font-size: 1.3rem; font-variant-numeric: tabular-nums; }
+
+/* Συντεταγμένες */
+.coordinates-form { display: flex; flex-direction: column; gap: 0.75rem; }
+.coordinates-box {
+  display: flex; flex-direction: column; gap: 0.75rem; background: var(--lavender); color: #20232e;
+  border-radius: 18px; padding: 1rem 1.25rem; font-size: 1.3rem;
+}
+.coordinates-box input {
+  font: inherit; font-size: 1.1rem; padding: 0.5rem 0.75rem; border: 2px solid var(--purple);
+  border-radius: 4px; background: var(--lavender); color: #20232e;
+}
+.coordinates-box input:disabled { opacity: 0.6; }
+.coordinates-actions { display: flex; gap: 1rem; }
+.btn-game { flex: 1; font-size: 1.2rem; padding: 0.7rem 1rem; border-radius: 6px; }
+.btn-forfeit {
+  align-self: flex-start; background: var(--purple); color: #fff; border-radius: 6px;
+  padding: 0.5rem 1.2rem; font-size: 1.05rem; margin-top: 1rem;
+}
+
+/* Grid 16x16 με αρίθμηση γραμμών (αριστερά) και στηλών (κάτω) */
+.game-grid {
+  display: grid; grid-template-columns: 2rem repeat(16, 1fr); grid-template-rows: repeat(16, 1fr) 2rem;
+  gap: 3px; width: 100%; max-width: 760px; aspect-ratio: 1; justify-self: center;
+}
+.grid-cell { padding: 0; border: 0; border-radius: 0; background: #fff; min-width: 0; min-height: 0; cursor: default; }
+.grid-cell.is-clickable { cursor: pointer; }
+.grid-cell.is-clickable:hover { outline: 2px solid var(--purple); outline-offset: -2px; }
+.grid-cell.is-centre { background: var(--bg); }
+.grid-cell.is-selected { outline: 3px solid var(--accent); outline-offset: -3px; }
+.grid-label { display: grid; place-items: center; font-size: 0.95rem; color: var(--text); }
+.grid-centre-icon { display: grid; place-items: center; font-size: 2rem; pointer-events: none; z-index: 1; }
+
+/* Μηνύματα πάνω από το grid (M-7, M-8) */
+.game-overlay { position: fixed; inset: 0; display: grid; place-items: center; padding: 1rem; background: rgba(0, 0, 0, 0.25); z-index: 10; }
+.overlay-card {
+  background: rgba(255, 85, 51, 0.92); color: #fff; border-radius: 60px; padding: 2.5rem 3rem;
+  width: min(1100px, 100%); text-align: center;
+}
+.overlay-card h2 { font-size: clamp(1.6rem, 4vw, 3rem); font-weight: 500; margin: 0 0 1.5rem; }
+.overlay-card p { font-size: clamp(1.1rem, 2.2vw, 1.8rem); margin: 0.5rem 0; }
+.overlay-card .not { color: #ff1a1a; }
+.overlay-reason { font-size: 1.1rem !important; opacity: 0.9; }
+.btn-overlay { background: #f4a06b; color: #fff; border: 1px solid #fff3; border-radius: 8px; font-size: 1.4rem; padding: 0.5rem 2rem; margin-top: 1rem; }
+
+@media (max-width: 860px) {
+  .game-layout { grid-template-columns: 1fr; }
+  .game-grid { gap: 2px; grid-template-columns: 1.4rem repeat(16, 1fr); grid-template-rows: repeat(16, 1fr) 1.4rem; }
+  .grid-label { font-size: 0.7rem; }
+}
+
+/* Οθόνη Challenge (mockup M-12) */
+.screen-challenge { justify-content: center; align-items: center; }
+.challenge-card {
+  background: #ff5533; color: #fff; border-radius: 28px; padding: 2rem 2.5rem;
+  width: min(1000px, 100%); text-align: center; display: flex; flex-direction: column; gap: 1.5rem;
+}
+.challenge-intro { font-size: clamp(1.1rem, 2vw, 1.6rem); margin: 0; line-height: 1.4; }
+.challenge-body { display: flex; align-items: center; gap: 1.5rem; }
+.challenge-timer .countdown-track { stroke: rgba(0, 0, 0, 0.25); }
+.challenge-timer .countdown-progress { stroke: #20232e; }
+.challenge-timer .countdown-text { color: #20232e; }
+.challenge-question { flex: 1; font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 500; margin: 0; }
+.challenge-options { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.challenge-option {
+  flex: 1 1 10rem; background: #f4a06b; color: #fff; border: 1px solid #20232e; border-radius: 6px;
+  font-size: 1.2rem; padding: 0.9rem 1rem;
+}
+.challenge-option:hover:not(:disabled) { background: #f7b386; }
+.challenge-option.is-chosen { background: #20232e; }
+.challenge-status { margin: 0; font-size: 1.2rem; }
+
+/* Αποτέλεσμα challenge στο game board (M-9, M-10, M-11) */
+.result-toast {
+  position: fixed; right: 2rem; bottom: 2rem; z-index: 5; display: flex; align-items: center; gap: 1rem;
+  background: #ff6a4d; color: #fff; border-radius: 28px; padding: 1.25rem 1.75rem; max-width: min(420px, calc(100% - 2rem));
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+.result-toast.is-success { background: #2f9e44; }
+.result-toast strong { display: block; font-size: 1.3rem; font-weight: 500; }
+.result-toast p { margin: 0.4rem 0 0; }
+.result-icon { font-size: 2.6rem; line-height: 1; }
+.grid-cell.is-acquired { animation: acquired 1.2s ease-out 2; }
+@keyframes acquired {
+  0% { box-shadow: 0 0 0 0 rgba(140, 233, 154, 0.9); }
+  100% { box-shadow: 0 0 0 14px rgba(140, 233, 154, 0); }
+}
+

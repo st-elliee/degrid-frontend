@@ -27,10 +27,11 @@ cp .env.example .env
 | Μεταβλητή | Προεπιλογή | Χρήση |
 |---|---|---|
 | VITE_API_URL | http://127.0.0.1:3000 | Διεύθυνση του backend, χωρίς `/api` στο τέλος |
+| VITE_TURN_SECONDS | 60 | Διάρκεια σειράς για το χρονόμετρο του game board (ίδια με το `TURN_SECONDS` του backend) |
 
 **Σημαντικό για τη δοκιμή:** το backend αδειάζει το mock game μετά από 300 δευτερόλεπτα αδράνειας και η σειρά
 επιλογής διαρκεί 60 δευτερόλεπτα. Για άνετη δοκιμή, στο `.env` του **backend** βάλε
-`TURN_SECONDS=3600` και `INACTIVITY_SECONDS=3600`.
+`TURN_SECONDS=3600` και `INACTIVITY_SECONDS=3600` (και στο `.env` του frontend `VITE_TURN_SECONDS=3600`).
 
 ## Οθόνες και endpoints
 
@@ -39,11 +40,11 @@ cp .env.example .env
 | 1 | Home | `src/pages/HomePage.jsx` | M-1 | `POST /queue/players` |
 | 2 | Queue lobby | `src/pages/QueuePage.jsx` | M-2, M-4, M-5, M-6 | `GET /queue/players`, `PUT /players/{playerId}/exit` |
 | 3 | Game board | `src/pages/GameBoardPage.jsx` | M-3, M-7, M-8 | `GET /games/{gameId}/grid`, `GET /games/{gameId}/turn`, `GET /games/{gameId}/players`, `POST .../validate-input`, `PUT .../forfeit` |
-| 4 | Challenge | `src/pages/ChallengePage.jsx` | M-13, M-9, M-10, M-11 | `GET /games/{gameId}/challenges/{challengeId}`, `POST .../challenge-answer` |
+| 4 | Challenge | `src/pages/ChallengePage.jsx` | M-12, M-9, M-10, M-11 | `GET /games/{gameId}/challenges/{challengeId}`, `POST .../challenge-answer`, `PUT .../cells/{cellId}` (κλικ σε cell στο board) |
 | 5 | Edit profile (modal) | `src/components/EditProfileModal.jsx` | M-2 | `GET /games/{gameId}/players/{playerId}`, `PUT .../profile` |
 
-Οι οθόνες 1-5 είναι στην αρχή placeholders και υλοποιούνται στα tasks #13 (Home, Queue), #14 (Game board),
-#15 (Challenge) και #16 (Edit profile).
+Οι οθόνες υλοποιήθηκαν στα tasks #13 (Home, Queue), #14 (Game board), #15 (Challenge) και #16 (Edit profile).
+Το modal προφίλ ανοίγει από την ουρά (όταν ξεκινήσει το game) και από το κουμπί "Edit" δίπλα στο "(Me)" στο leaderboard.
 
 ## Δομή
 
