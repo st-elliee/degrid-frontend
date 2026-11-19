@@ -27,10 +27,11 @@ cp .env.example .env
 | Μεταβλητή | Προεπιλογή | Χρήση |
 |---|---|---|
 | VITE_API_URL | http://127.0.0.1:3000 | Διεύθυνση του backend, χωρίς `/api` στο τέλος |
+| VITE_TURN_SECONDS | 60 | Διάρκεια σειράς για το χρονόμετρο του game board (ίδια με το `TURN_SECONDS` του backend) |
 
 **Σημαντικό για τη δοκιμή:** το backend αδειάζει το mock game μετά από 300 δευτερόλεπτα αδράνειας και η σειρά
 επιλογής διαρκεί 60 δευτερόλεπτα. Για άνετη δοκιμή, στο `.env` του **backend** βάλε
-`TURN_SECONDS=3600` και `INACTIVITY_SECONDS=3600`.
+`TURN_SECONDS=3600` και `INACTIVITY_SECONDS=3600` (και στο `.env` του frontend `VITE_TURN_SECONDS=3600`).
 
 ## Οθόνες και endpoints
 

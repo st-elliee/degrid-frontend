@@ -25,6 +25,15 @@ export const POLL_GAME_MS = 3000;
 /** Το backend αφαιρεί παίκτη μετά από 300 δευτ. αδράνειας: κλήση ενός GET του παίκτη κάθε 45 δευτ. τον κρατά ενεργό. */
 export const HEARTBEAT_MS = 45000;
 
+/**
+ * Διάρκεια σειράς (δευτ.). Πρέπει να συμφωνεί με το TURN_SECONDS του backend (προεπιλογή 60).
+ * Το GET /turn δεν επιστρέφει υπόλοιπο χρόνο, οπότε το frontend μετρά από τη στιγμή που αλλάζει η σειρά.
+ */
+export const TURN_SECONDS = Number(import.meta.env.VITE_TURN_SECONDS) || 60;
+
+/** Πόση ώρα φαίνεται το "The coordinates have been approved" πριν ανοίξει το challenge (ms). */
+export const APPROVED_DELAY_MS = 2000;
+
 /** Ανανέωση της ένδειξης "Game in progress" στην επικεφαλίδα των οθονών Home και Queue (ms). */
 export const POLL_STATUS_MS = 5000;
 
