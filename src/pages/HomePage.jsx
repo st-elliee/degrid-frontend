@@ -1,6 +1,98 @@
-import Placeholder from '../components/Placeholder.jsx';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { joinQueue } from '../api';
+import ErrorMessage from '../components/ErrorMessage.jsx';
+import GameStatusBadge from '../components/GameStatusBadge.jsx';
+import Logo from '../components/Logo.jsx';
+import { usePlayer } from '../hooks/usePlayer.js';
+import { LANGUAGES, PLAYER_COUNT } from '../utils/constants.js';
+import '../styles/screens.css';
 
-/** Οθόνη 1: Home (mockup M-1). Task #13. */
+/**
+ * Οθόνη 1: Home (mockup M-1). Task #13.
+ * Endpoint: POST /queue/players.
+ * Το mockup δεν έχει login, οπότε ο παίκτης επιλέγεται από λίστα (IDs 1-48 του backend).
+ */
 export default function HomePage() {
-  return <Placeholder title="Home" task="#13" endpoints={['POST /queue/players']} />;
+  const { playerId, setPlayerId, language, setLanguage, setGameId } = usePlayer();
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showLanguages, setShowLanguages] = useState(false);
+
+  async function handleJoin() {
+    setLoading(true);
+    setError(null);
+    try {
+      await joinQueue(playerId);
+      setGameId(null);
+      navigate('/queue');
+    } catch (err) {
+      setError(err);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <div className="screen screen-home">
+      <div className="screen-top">
+        <GameStatusBadge />
+      </div>
+
+      <Logo size={120} />
+      <h1 className="title">DeGrid</h1>
+      <p className="tagline">
+        Tired of studying for your degree?
+        <br />
+        It&apos;s time for Degrid!
+      </p>
+
+      <label className="field">
+        Playing as
+        <select value={playerId} onChange={(e) => setPlayerId(e.target.value)} disabled={loading}>
+          {Array.from({ length: PLAYER_COUNT }, (_, i) => i + 1).map((id) => (
+            <option key={id} value={id}>
+              Player {id}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <div className="actions">
+        <button type="button" className="btn btn-primary" onClick={handleJoin} disabled={loading}>
+          {loading ? 'Joining…' : 'Join Game Queue'}
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={() => setShowLanguages((v) => !v)}>
+          Change Language
+        </button>
+      </div>
+
+      {showLanguages && (
+        <div className="language-picker" role="group" aria-label="Profile language">
+          {LANGUAGES.map(({ code, label }) => (
+            <button
+              key={code}
+              type="button"
+              className={`btn btn-outline ${language === code ? 'is-active' : ''}`}
+              onClick={() => {
+                setLanguage(code);
+                setShowLanguages(false);
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
+      <p className="muted small">Profile language: {LANGUAGES.find((l) => l.code === language)?.label ?? language}</p>
+
+      <ErrorMessage error={error} />
+      {error?.status === 409 && (
+        <p className="small">
+          <Link to="/queue">Go to the queue</Link>
+        </p>
+      )}
+    </div>
+  );
 }

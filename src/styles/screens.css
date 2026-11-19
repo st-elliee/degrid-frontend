@@ -1,0 +1,74 @@
+/* Οθόνες Home και Queue (mockups M-1, M-2, M-4, M-6). */
+
+.screen { display: flex; flex-direction: column; align-items: center; gap: 1rem; min-height: 80vh; }
+.screen-top { align-self: stretch; display: flex; justify-content: flex-end; align-items: center; gap: 1rem; }
+.screen-top-queue { justify-content: space-between; }
+.top-right { display: flex; align-items: center; gap: 1rem; }
+.center { text-align: center; }
+.small { font-size: 0.85rem; }
+
+.status-badge {
+  display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0.8rem;
+  border: 1px solid var(--text); border-radius: 6px; font-size: 0.8rem;
+}
+.status-dot { width: 0.75rem; height: 0.75rem; border-radius: 50%; border: 3px solid currentColor; }
+.status-idle { color: var(--ok); }
+.status-live { color: var(--live); }
+.status-unknown { color: var(--muted); border-color: var(--border); }
+
+.title { font-size: 2.5rem; font-weight: 600; margin: 0; }
+.tagline { font-size: 1.3rem; text-align: center; margin: 1rem 0; line-height: 1.5; }
+
+.field { display: flex; flex-direction: column; gap: 0.3rem; font-size: 0.9rem; color: var(--muted); width: min(500px, 100%); }
+.field select {
+  font: inherit; padding: 0.5rem; border-radius: 6px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text);
+}
+
+.actions { display: flex; flex-direction: column; gap: 1rem; width: min(500px, 100%); }
+.btn { font: inherit; border-radius: 16px; padding: 1.1rem 1rem; font-size: 1.3rem; border: 0; }
+.btn-primary { background: var(--accent); color: var(--accent-contrast); }
+.btn-secondary { background: var(--brown); color: var(--text); }
+.btn-outline {
+  background: transparent; color: var(--purple); border: 2px solid var(--purple);
+  border-radius: 10px; padding: 0.5rem 1rem; font-size: 1rem;
+}
+.btn-outline.is-active { background: var(--purple); color: var(--bg); }
+.btn-soft { background: #ffc2b3; color: #20232e; border: 1px solid #20232e; border-radius: 8px; padding: 0.6rem 1.2rem; font-size: 1.1rem; }
+.language-picker { display: flex; gap: 0.75rem; }
+
+.icon-btn {
+  background: transparent; color: var(--purple); border: 2px solid var(--purple);
+  border-radius: 8px; padding: 0.3rem 0.8rem;
+}
+
+.counter-box {
+  border: 1px solid var(--text); border-radius: 12px; padding: 1.5rem 3rem; text-align: center;
+  font-size: 2rem; color: var(--accent); margin-top: 0.5rem;
+}
+.game-starts { display: block; margin-top: 0.5rem; }
+
+.player-list {
+  list-style: none; margin: 1rem 0; padding: 0.5rem 1rem; width: min(900px, 100%);
+  max-height: 420px; overflow-y: auto; border: 1px solid var(--text); border-radius: 12px;
+}
+.player-row { display: flex; align-items: center; gap: 1.25rem; padding: 0.4rem 0; }
+.player-name { font-size: 1.6rem; flex: 1; }
+
+.avatar { border-radius: 50%; object-fit: cover; background: var(--surface-2); flex: none; }
+.avatar-fallback { display: inline-grid; place-items: center; font-weight: 700; color: var(--text); }
+
+.notice { text-align: center; }
+
+.screen-bottom {
+  align-self: stretch; display: flex; justify-content: space-between; align-items: flex-end;
+  gap: 1rem; margin-top: auto; flex-wrap: wrap;
+}
+.encouragement { color: var(--accent); font-size: 1.2rem; line-height: 1.6; margin: 0; }
+.remaining { display: flex; flex-direction: column; align-items: center; color: var(--purple); font-size: 1.2rem; }
+
+.modal-light { background: #fff; color: #20232e; border-radius: 14px; width: min(560px, 100%); }
+.modal-light h2 { color: var(--accent); font-size: 2rem; font-weight: 500; margin-top: 0; }
+.modal-light p { font-size: 1.3rem; }
+.modal-actions { display: flex; justify-content: space-between; gap: 1rem; margin-top: 1.5rem; }
+.modal-actions .btn { font-size: 1.2rem; padding: 0.7rem 1.4rem; border-radius: 8px; }

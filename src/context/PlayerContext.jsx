@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useMemo, useState } from 'react';
-import { DEFAULT_PLAYER_ID, STORAGE_KEY } from '../utils/constants.js';
+import { DEFAULT_LANGUAGE, DEFAULT_PLAYER_ID, STORAGE_KEY } from '../utils/constants.js';
 
 export const PlayerContext = createContext(null);
 
@@ -8,16 +8,20 @@ function loadSession() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      const { playerId, gameId } = JSON.parse(raw);
-      return { playerId: Number(playerId) || DEFAULT_PLAYER_ID, gameId: gameId ? Number(gameId) : null };
+      const { playerId, gameId, language } = JSON.parse(raw);
+      return {
+        playerId: Number(playerId) || DEFAULT_PLAYER_ID,
+        gameId: gameId ? Number(gameId) : null,
+        language: language || DEFAULT_LANGUAGE,
+      };
     }
   } catch {
     // Το localStorage μπορεί να μην είναι διαθέσιμο: συνεχίζουμε με προεπιλογές.
   }
-  return { playerId: DEFAULT_PLAYER_ID, gameId: null };
+  return { playerId: DEFAULT_PLAYER_ID, gameId: null, language: DEFAULT_LANGUAGE };
 }
 
-/** Κρατά τον τρέχοντα παίκτη (playerId) και το game στο οποίο συμμετέχει (gameId). Δεν υπάρχει login. */
+/** Κρατά τον τρέχοντα παίκτη (playerId), το game του (gameId) και τη γλώσσα προφίλ. Δεν υπάρχει login. */
 export function PlayerProvider({ children }) {
   const [session, setSession] = useState(loadSession);
 
@@ -31,11 +35,23 @@ export function PlayerProvider({ children }) {
 
   const setPlayerId = useCallback((playerId) => setSession((s) => ({ ...s, playerId: Number(playerId) })), []);
   const setGameId = useCallback((gameId) => setSession((s) => ({ ...s, gameId: gameId ? Number(gameId) : null })), []);
-  const reset = useCallback(() => setSession({ playerId: DEFAULT_PLAYER_ID, gameId: null }), []);
+  const setLanguage = useCallback((language) => setSession((s) => ({ ...s, language })), []);
+  const reset = useCallback(
+    () => setSession((s) => ({ playerId: s.playerId, gameId: null, language: s.language })),
+    [],
+  );
 
   const value = useMemo(
-    () => ({ playerId: session.playerId, gameId: session.gameId, setPlayerId, setGameId, reset }),
-    [session, setPlayerId, setGameId, reset],
+    () => ({
+      playerId: session.playerId,
+      gameId: session.gameId,
+      language: session.language,
+      setPlayerId,
+      setGameId,
+      setLanguage,
+      reset,
+    }),
+    [session, setPlayerId, setGameId, setLanguage, reset],
   );
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;
