@@ -43,8 +43,8 @@ cp .env.example .env
 | 4 | Challenge | `src/pages/ChallengePage.jsx` | M-12, M-9, M-10, M-11 | `GET /games/{gameId}/challenges/{challengeId}`, `POST .../challenge-answer`, `PUT .../cells/{cellId}` (κλικ σε cell στο board) |
 | 5 | Edit profile (modal) | `src/components/EditProfileModal.jsx` | M-2 | `GET /games/{gameId}/players/{playerId}`, `PUT .../profile` |
 
-Οι οθόνες 1-5 είναι στην αρχή placeholders και υλοποιούνται στα tasks #13 (Home, Queue), #14 (Game board),
-#15 (Challenge) και #16 (Edit profile).
+Οι οθόνες υλοποιήθηκαν στα tasks #13 (Home, Queue), #14 (Game board), #15 (Challenge) και #16 (Edit profile).
+Το modal προφίλ ανοίγει από την ουρά (όταν ξεκινήσει το game) και από το κουμπί "Edit" δίπλα στο "(Me)" στο leaderboard.
 
 ## Δομή
 

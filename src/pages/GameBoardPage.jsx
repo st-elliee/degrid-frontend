@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { forfeit, getGrid, getPlayer, getPlayers, getTurn, listGames, selectCell, validateInput } from '../api';
 import CountdownRing from '../components/CountdownRing.jsx';
+import EditProfileModal from '../components/EditProfileModal.jsx';
 import ErrorMessage from '../components/ErrorMessage.jsx';
 import GameGrid from '../components/GameGrid.jsx';
 import GameStatusBadge from '../components/GameStatusBadge.jsx';
@@ -46,6 +47,7 @@ export default function GameBoardPage() {
   const [rejected, setRejected] = useState(null);
   const [confirmForfeit, setConfirmForfeit] = useState(false);
   const [result, setResult] = useState(null);
+  const [profileOpen, setProfileOpen] = useState(false);
   const inputRef = useRef(null);
 
   // Αποτέλεσμα του challenge που μόλις ολοκληρώθηκε (το στέλνει η ChallengePage). Καθαρίζεται από το history
@@ -209,7 +211,19 @@ export default function GameBoardPage() {
       {grid && (
         <div className="game-layout">
           <aside className="game-side">
-            <Leaderboard players={players} grid={grid} playerId={playerId} currentPlayerId={turn?.currentPlayerId} />
+            <Leaderboard
+              players={players}
+              grid={grid}
+              playerId={playerId}
+              currentPlayerId={turn?.currentPlayerId}
+              actions={
+                !notInGame && (
+                  <button type="button" className="btn btn-outline btn-profile" onClick={() => setProfileOpen(true)}>
+                    Edit
+                  </button>
+                )
+              }
+            />
 
             <form className="coordinates-form" onSubmit={handleRequest}>
               <label className="coordinates-box">
@@ -286,6 +300,14 @@ export default function GameBoardPage() {
           </div>
         </div>
       )}
+
+      <EditProfileModal
+        open={profileOpen}
+        gameId={gameId}
+        playerId={playerId}
+        onClose={() => setProfileOpen(false)}
+        onSaved={refresh}
+      />
 
       {confirmForfeit && (
         <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="forfeit-title">

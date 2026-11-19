@@ -46,6 +46,10 @@ export const POLL_STATUS_MS = 5000;
 /** Πόση ώρα φαίνεται το "THE GAME STARTS NOW!" πριν μπει ο παίκτης στο game (ms). */
 export const GAME_START_DELAY_MS = 3000;
 
+/** Εικόνες avatar που δέχεται το backend (PUT .../profile) και μέγιστο μέγεθος (1 MB). */
+export const AVATAR_TYPES = ['image/png', 'image/jpeg', 'image/gif', 'image/webp'];
+export const AVATAR_MAX_BYTES = 1024 * 1024;
+
 /** Γλώσσες προφίλ που προσφέρονται στο "Change Language". Το backend δέχεται οποιοδήποτε κείμενο. */
 export const LANGUAGES = [
   { code: 'en', label: 'English' },
