@@ -7,6 +7,7 @@ import Loader from '../components/Loader.jsx';
 import { useCountdown } from '../hooks/useCountdown.js';
 import { usePlayer } from '../hooks/usePlayer.js';
 import { TIMEOUT_GRACE_MS } from '../utils/constants.js';
+import { playClown, playSuccess } from '../utils/sounds.js';
 import '../styles/screens.css';
 import '../styles/game.css';
 
@@ -51,6 +52,9 @@ export default function ChallengePage() {
         const { data, message } = await answerChallenge(gameId, playerId, challengeId, answer);
         const expired = outOfTime || /timed out/i.test(message);
         const outcome = expired ? 'timeout' : data.cellAcquired ? 'success' : 'failed';
+        // Ήχος επιτυχίας όταν κερδίζεται το κελί, "clown sound" σε λάθος απάντηση ή λήξη χρόνου (user story S-4).
+        if (outcome === 'success') playSuccess();
+        else playClown();
         navigate(`/game/${gameId}`, { replace: true, state: { challengeResult: { outcome, cell: data.cell, message } } });
       } catch (err) {
         setError(err);

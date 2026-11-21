@@ -11,6 +11,7 @@ import { usePlayer } from '../hooks/usePlayer.js';
 import { usePolling } from '../hooks/usePolling.js';
 import { GAME_START_DELAY_MS, POLL_QUEUE_MS } from '../utils/constants.js';
 import { findGameOfPlayer } from '../utils/games.js';
+import { startWaitingMusic, stopWaitingMusic } from '../utils/sounds.js';
 import '../styles/screens.css';
 
 /**
@@ -29,6 +30,7 @@ export default function QueuePage() {
   const [startedGameId, setStartedGameId] = useState(null);
   const [error, setError] = useState(null);
   const [waitDialog, setWaitDialog] = useState(false);
+  const [waitingMusic, setWaitingMusic] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const lastRemaining = useRef(null);
 
@@ -50,10 +52,12 @@ export default function QueuePage() {
       setQueueMessage(queueResult.message);
       setSecondsLeft(q.remainingTime);
 
-      // Αν με λιγότερους από 4 παίκτες ο χρόνος ξαναρχίζει (ή φτάσει στο 0), εμφανίζεται το μήνυμα του M-6.
+      // Αν με λιγότερους από 4 παίκτες ο χρόνος ξαναρχίζει (το υπόλοιπο αυξάνεται, ενώ κανονικά μειώνεται) ή φτάσει στο 0,
+      // εμφανίζεται το μήνυμα του M-6.
       const previous = lastRemaining.current;
-      if (q.count < q.minPlayers && q.count > 0 && (q.remainingTime === 0 || (previous !== null && q.remainingTime > previous + 5))) {
+      if (q.count < q.minPlayers && q.count > 0 && (q.remainingTime === 0 || (previous !== null && q.remainingTime > previous))) {
         setWaitDialog(true);
+        setWaitingMusic(true);
       }
       lastRemaining.current = q.remainingTime;
     } catch (err) {
@@ -68,6 +72,14 @@ export default function QueuePage() {
     const id = setInterval(() => setSecondsLeft((s) => Math.max(0, s - 1)), 1000);
     return () => clearInterval(id);
   }, []);
+
+  // Μουσική αναμονής (user story S-1): ξεκινά όταν εμφανιστεί το μήνυμα "Not Enough Players" και συνεχίζεται μέχρι να
+  // δημιουργηθεί το game ή να φύγει ο παίκτης από την οθόνη. Το κλείσιμο του μηνύματος δεν τη σταματά.
+  useEffect(() => {
+    if (waitingMusic && !startedGameId) startWaitingMusic();
+    else stopWaitingMusic();
+    return stopWaitingMusic;
+  }, [waitingMusic, startedGameId]);
 
   // Όταν δημιουργηθεί το game, εμφανίζεται για λίγο το "THE GAME STARTS NOW!" και μετά ανοίγει το game board.
   useEffect(() => {
