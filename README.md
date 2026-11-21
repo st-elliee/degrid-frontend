@@ -131,6 +131,9 @@ Queue), #14 (Game board), #15 (Challenge) και #16 (Edit profile).
   έχει ανοιχτό browser να μη θεωρηθεί αδρανής από το backend.
 - **Σειρά:** το Request cell είναι ενεργό μόνο όταν είναι η σειρά του παίκτη. Στο challenge ο χρόνος μετρά αντίστροφα από
   το `timeLimit` που επιστρέφει το backend. Όταν λήξει, το frontend στέλνει κενή απάντηση για να λάβει το αποτέλεσμα.
+- **Ήχοι (user stories S-1 και S-4):** παράγονται με το Web Audio API, χωρίς αρχεία ήχου. Παίζει ήχος επιτυχίας όταν ο
+  παίκτης κερδίζει το κελί και "clown sound" όταν η απάντηση είναι λάθος ή λήξει ο χρόνος. Στην ουρά παίζει μουσική από τη
+  στιγμή που εμφανίζεται το μήνυμα "Not Enough Players in the Queue!" μέχρι να ξεκινήσει το game (στο backend εμφανίζεται μετά από `QUEUE_SECONDS`, προεπιλογή 360 δευτ.· για γρήγορη δοκιμή βάλε `QUEUE_SECONDS=10` στο `.env` του backend). Το εικονίδιο μουσικής πάνω δεξιά ανοίγει και κλείνει τον ήχο.
 - **Σφάλματα:** κάθε οθόνη δείχνει το μήνυμα που επιστρέφει το backend (400, 404, 409, `TURN_CONFLICT`) και κατάσταση
   φόρτωσης.
 - **Έλεγχοι φορμών:** συντεταγμένες 1–16, υποχρεωτικό όνομα και γλώσσα στο προφίλ, τύπος και μέγεθος του avatar.
@@ -141,13 +144,13 @@ Queue), #14 (Game board), #15 (Challenge) και #16 (Edit profile).
 src/
   api/          axios client και μέθοδοι ανά resource (queue, games, players, grid, challenges, turns)
   components/   Avatar, CountdownRing, EditProfileModal, ErrorMessage, GameGrid, GameStatusBadge, Layout,
-                Leaderboard, Loader, Logo
+                Leaderboard, Loader, Logo, MusicIcon
   context/      PlayerContext: τρέχων παίκτης (playerId), game (gameId) και γλώσσα προφίλ
   hooks/        usePlayer, usePolling, useCountdown
   pages/        μία οθόνη ανά αρχείο
   router/       διαδρομές (AppRoutes.jsx)
   styles/       μεταβλητές CSS και στυλ ανά οθόνη
-  utils/        σταθερές, validators, βοηθητικά για cells και games
+  utils/        σταθερές, validators, βοηθητικά για cells και games, ήχοι (sounds.js)
 ```
 
 ## Κανόνες για την ομάδα
